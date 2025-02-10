@@ -68,7 +68,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _shareApp() {
-    String appLink = "https://github.com/user/simpel_habit_tracker_byfar";
+    String appLink =
+        "https://www.mediafire.com/file/9uzm9ww16vvv9qs/simple_habit_tracker_byfar_v.1.1.apk/file";
     String message =
         "Ayo coba aplikasi Simple Habit Tracker! 🚀\n\nDownload di sini: [$appLink]";
 

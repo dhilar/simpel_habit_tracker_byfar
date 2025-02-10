@@ -18,7 +18,8 @@ class CompletedHabitsScreen extends StatelessWidget {
         .map((habit) => "✅ ${habit.name}")
         .toList();
 
-    String appLink = "https://github.com/user/simpel_habit_tracker_byfar";
+    String appLink =
+        "https://www.mediafire.com/file/9uzm9ww16vvv9qs/simple_habit_tracker_byfar_v.1.1.apk/file";
     String message =
         "Aku sudah mencoba aplikasi habit tracker! Kamu kapan? 🚀\n\n"
         "${completedHabits.join("\n")}\n\n"
