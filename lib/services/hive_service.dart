@@ -1,52 +1,61 @@
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import '../models/habit.dart';
 
 class HiveService {
-  late Box _habitBox;
+  static final HiveService _instance = HiveService._internal();
+  factory HiveService() => _instance;
+  HiveService._internal();
 
-  // Inisialisasi Hive (Dipanggil sekali saat aplikasi dimulai)
+  late Box<Habit> _habitBox;
+  bool _isInitialized =
+      false; // ✅ Tambahkan untuk memastikan Hive hanya inisialisasi sekali
+
+  /// **Inisialisasi Hive**
   Future<void> initHive() async {
-    if (!Hive.isBoxOpen('habits')) {
-      _habitBox = await Hive.openBox('habits');
-    } else {
-      _habitBox = Hive.box('habits');
+    if (_isInitialized) return; // ✅ Cegah inisialisasi ganda
+
+    await Hive.initFlutter();
+
+    /// **Registrasi Adapter jika belum terdaftar**
+    if (!Hive.isAdapterRegistered(HabitAdapter().typeId)) {
+      Hive.registerAdapter(HabitAdapter());
     }
+
+    /// **Buka Box Habit**
+    _habitBox = await Hive.openBox<Habit>('habits');
+
+    _isInitialized = true; // ✅ Tandai bahwa Hive sudah diinisialisasi
   }
 
-  // Menyimpan Habit ke Hive
+  /// **Tambah Habit**
   Future<void> addHabit(Habit habit) async {
-    try {
-      await _habitBox.add(habit);
-    } catch (e) {
-      print('Error menambahkan habit: $e');
-    }
+    await _habitBox.add(habit);
   }
 
-  // Mengambil semua Habit
-  List<Habit> getAllHabits() {
-    try {
-      return _habitBox.values.cast<Habit>().toList();
-    } catch (e) {
-      print('Error mengambil habit: $e');
-      return [];
-    }
-  }
-
-  // Mengupdate status Habit
+  /// **Update Habit**
   Future<void> updateHabit(int index, Habit habit) async {
-    try {
-      await _habitBox.putAt(index, habit);
-    } catch (e) {
-      print('Error memperbarui habit: $e');
-    }
+    await _habitBox.putAt(index, habit);
   }
 
-  // Menghapus Habit
+  /// **Hapus Habit**
   Future<void> deleteHabit(int index) async {
-    try {
-      await _habitBox.deleteAt(index);
-    } catch (e) {
-      print('Error menghapus habit: $e');
+    await _habitBox.deleteAt(index);
+  }
+
+  /// **Ambil Semua Habit**
+  List<Habit> getHabits() {
+    if (!_isInitialized) {
+      throw Exception("Hive belum diinisialisasi. Panggil initHive() dulu.");
     }
+    return _habitBox.values.toList();
+  }
+
+  /// **Ambil Box untuk penggunaan langsung**
+  Box<Habit> getBox() {
+    if (!_isInitialized) {
+      throw Exception("Hive belum diinisialisasi. Panggil initHive() dulu.");
+    }
+    return _habitBox;
   }
 }

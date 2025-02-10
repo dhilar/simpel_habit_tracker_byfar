@@ -1,9 +1,10 @@
 import 'package:hive/hive.dart';
 
-part 'habit.g.dart'; // Diperlukan untuk Hive TypeAdapter
+part 'habit.g.dart'; // ✅ Wajib ada untuk Hive Adapter
 
-@HiveType(typeId: 0) // Set ID unik untuk Hive
-class Habit {
+@HiveType(typeId: 0)
+class Habit extends HiveObject {
+  // ✅ Gunakan HiveObject untuk memudahkan update/delete
   @HiveField(0)
   String name;
 
